@@ -6,7 +6,7 @@ This is the robot programs used for the Lillou robot.
 ```
 python -m venv venv
 
-pip install gpiozero pyserial 
+pip install gpiozero pyserial smbus2
 ```
 
 ### Enter Environment

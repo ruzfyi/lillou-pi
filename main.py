@@ -62,13 +62,12 @@ if response == "ACK: OK":
     time.sleep(0.5)
 else:
     print("pico failed")
-    print(response)
+    print("PICO:", response)
     while True:
         display.message("RED BUZZER", line=2)
 
 # Reset all the servos
 keypad.full_reset()
-#minibot_servo.servo_value(-0.5)
 
 # STAND BY mode
 display.clear()
@@ -77,14 +76,44 @@ display.message("STANDING BY", line=1)
 waiting = True
 while waiting:
     response = pico_msg()
-    print(response)
+    print("PICO:", response)
     if response == "START":
         waiting = False
         display.clear()
         display.message("STARTED", line=1)
-        print("PI: STARTING RUN")
+        print("STARTING RUN")
 
-# Start run
+# RUNNING -> BUTTON -> GET COLOR
+
+waiting = True
+while waiting:
+    response = pico_msg()
+    print("PICO:", response)
+    if response == "COLOR_1_READY":
+        waiting = False
+        display.clear()
+        display.message("COLOR 1", line=1)
+
+colors[0] = esp.get_color()
+
+if colors[0]:
+    print("COLOR 1:", colors[0])
+    print("COLORS:", colors)
+    display.message("DONE", line=2)
+else:
+    while True:
+        display.message("ERR", line=2)
+
+response = send_command("COLOR_1_DONE")
+
+print("PICO:", response)
+
+if response == "ACK: OK":
+    display.clear()
+    display.message("KEYPAD", line=1)
+else:
+    while True:
+        display.message("MISTIME", line=1)
 
 display.clear()
 display.message("KEYPAD", line=1)
@@ -99,10 +128,14 @@ while waiting:
 
 print("Doing camera")
 colors[1] = esp.get_color()
+print("COLOR 2:", colors[1])
+print("COLORS:",colors)
 
 response = send_command("KEYPAD_DONE")
+print("PICO:", response)
 
 if response == "ACK: OK":
+    print("PICO:", response)
     display.clear()
-    display.message("KEYPAD", line=1)
+    display.message("COLOR_2_DONE", line=1)
     display.message("DONE", line=2)

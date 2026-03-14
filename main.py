@@ -7,7 +7,7 @@ from Keypad_driver import Keypad
 import time, serial
 
 display = LCD(addr=0x3F) # LCD init
-#esp = ESP32(port='/dev/ttyUSB0') # comm with esp
+esp = ESP32(port='/dev/ttyUSB0') # comm with esp
 pico = serial.Serial('/dev/ttyACM0', 115200, timeout=1) # comm with pico
 keypad = Keypad() # keypad init
 
@@ -31,7 +31,6 @@ print("functions initialized")
 print("testing esp")
 
 display.clear()
-"""
 # This portion performs a sanity check for the ESP connection
 display.message("CHECK ESP", line=1)
 
@@ -46,7 +45,6 @@ display.clear()
 display.message("ESP OKAY", line=1)
 
 time.sleep(0.5)
-"""
 
 print("esp tested")
 
@@ -88,13 +86,6 @@ while waiting:
 
 # Start run
 
-"""
-Release camera
-"""
-
-"""
-Get camera into position for button
-"""
 display.clear()
 display.message("KEYPAD", line=1)
 waiting = True

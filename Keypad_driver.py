@@ -28,9 +28,7 @@ class Keypad:
 
     def run(self):
         print("Running actuators")
-        # 7
-        self.tis_pins.value = (0, 0, 0, 0, 1, 0, 0, 0)
-        time.sleep(1)
+        
         # 3
         self.tis_pins.value = (0, 0, 0, 0, 1, 0, 1, 0)
         time.sleep(1)
@@ -65,6 +63,14 @@ class Keypad:
         self.tis_pins.value = (0, 1, 0, 1, 0, 1, 0, 1)
         time.sleep(2)
         print("Done")
+
+    def prep(self):
+        print("Prepping actuator")
+        # 7
+        self.tis_pins.value = (0, 0, 0, 0, 1, 0, 0, 0)
+        time.sleep(0.5)
+        self.tis_pins.value = (0, 0, 0, 0, 0, 0, 0, 0)
+        time.sleep(0.5)
     
     def full_reset(self):
         self.tis_pins.value = (0, 1, 0, 1, 0, 1, 0, 1)

@@ -26,6 +26,15 @@ def pico_msg():
     line = pico.readline().decode('utf-8').strip()
     return line
 
+def esp_get_color():
+    esp.connect()
+    color = esp.get_color()
+    if color:
+        esp.close()
+    else:
+        return None
+    return color
+
 print("functions initialized")
 
 print("testing esp")
@@ -37,6 +46,7 @@ display.message("CHECK ESP", line=1)
 if (esp.connect()):
     display.message("GOOD CONN", line=2)
     time.sleep(0.5)
+    esp.close()
 else:
     while True:
         display.message("ESP NO CONN", line-2)
@@ -53,7 +63,17 @@ display.message("PI READY", line=1)
 
 print("testing pico")
 
+"""
 # Make sure PICO is connected 
+response = send_command("RESET")
+
+waiting = True
+while waiting:
+    response = pico_msg()
+    print("PICO:", response)
+    if response == "ISON":
+        waiting = False
+"""
 response = send_command("PI_READY")
 print("PICO:",response)
 if response == "ACK: OK":
@@ -94,7 +114,7 @@ while waiting:
         display.clear()
         display.message("COLOR 1", line=1)
 
-colors[0] = esp.get_color()
+colors[0] = esp_get_color()
 
 if colors[0]:
     print("COLOR 1:", colors[0])
@@ -108,12 +128,17 @@ response = send_command("COLOR_1_DONE")
 
 print("PICO:", response)
 
+
 if response == "ACK: OK":
     display.clear()
     display.message("KEYPAD", line=1)
 else:
     while True:
         display.message("MISTIME", line=1)
+
+keypad.prep()
+
+time.sleep(0.5)
 
 display.clear()
 display.message("KEYPAD", line=1)
@@ -127,7 +152,7 @@ while waiting:
         display.message("DOING",line=2)
 
 print("Doing camera")
-colors[1] = esp.get_color()
+colors[1] = esp_get_color()
 print("COLOR 2:", colors[1])
 print("COLORS:",colors)
 
@@ -139,3 +164,16 @@ if response == "ACK: OK":
     display.clear()
     display.message("COLOR_2_DONE", line=1)
     display.message("DONE", line=2)
+
+waiting = True
+while waiting:
+    response = pico_msg()
+    print("PICO:", response)
+    if response == "LIST_COLORS":
+        waiting = False
+        display.clear()
+        string_1 = colors[0] + " " + colors[1]
+        # string_2 = colors[2] + colors[3]
+        display.message(string_1, line=1)
+        # display.message(string_2, line=2)
+
